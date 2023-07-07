@@ -1,0 +1,24 @@
+.ing {
+  display: flex;
+  align-items: center;
+}
+
+.main {
+  max-height: 475px;
+  overflow-y: scroll;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+}

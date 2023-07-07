@@ -1,0 +1,11 @@
+.box {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ingBox {
+  max-height: 800px;
+  overflow-y: scroll;
+}

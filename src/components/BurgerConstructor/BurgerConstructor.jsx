@@ -6,17 +6,10 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./BurgerConstructor.module.css";
 
-export default function BurgerConstructor({
-  data,
-  setIsModalOpen,
-  changeModal,
-}) {
+export default function BurgerConstructor({ data, changeModal }) {
   return (
     <div>
-      <div
-        style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-        className="mb-4 mt-4"
-      >
+      <div className={styles.const + " mb-4 mt-4"}>
         <div className={styles.ing}>
           <div className={styles.hidden}>
             <DragIcon type="primary" />
@@ -34,7 +27,7 @@ export default function BurgerConstructor({
         {data.map((item) => {
           if (item.type == "main") {
             return (
-              <div className={styles.ing}>
+              <div key={item._id} className={styles.ing}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   text={item.name}
@@ -46,7 +39,7 @@ export default function BurgerConstructor({
             );
           } else if (item.type == "sauce") {
             return (
-              <div className={styles.ing}>
+              <div key={item._id} className={styles.ing}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   text={item.name}

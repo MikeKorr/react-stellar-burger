@@ -12,7 +12,7 @@ export function Bun({
   setItemIng,
   changeModal,
 }) {
-  const cliker = (evt) => {
+  const handleClick = (evt) => {
     setItemIng(evt);
     setIsModalOpen(true);
     changeModal("Ing");
@@ -26,7 +26,7 @@ export function Bun({
           if (item.type == "bun") {
             return (
               <ProtoIngredient
-                handlerClick={cliker}
+                handlerClick={handleClick}
                 key={item._id}
                 ingredient={item}
               />
@@ -45,7 +45,7 @@ export function Sauce({
   setItemIng,
   changeModal,
 }) {
-  const cliker = (evt) => {
+  const handleClick = (evt) => {
     setItemIng(evt);
     setIsModalOpen(true);
     changeModal("Ing");
@@ -59,7 +59,7 @@ export function Sauce({
           if (item.type == "sauce") {
             return (
               <ProtoIngredient
-                handlerClick={cliker}
+                handlerClick={handleClick}
                 key={item._id}
                 ingredient={item}
               />
@@ -78,7 +78,7 @@ export function Main({
   setItemIng,
   changeModal,
 }) {
-  const cliker = (evt) => {
+  const handleClick = (evt) => {
     setItemIng(evt);
     setIsModalOpen(true);
     changeModal("Ing");
@@ -92,7 +92,7 @@ export function Main({
           if (item.type == "main") {
             return (
               <ProtoIngredient
-                handlerClick={cliker}
+                handlerClick={handleClick}
                 key={item._id}
                 ingredient={item}
               />
@@ -107,12 +107,6 @@ export function Main({
 Main.propTypes = { ...ingredientPropType };
 Sauce.propTypes = { ...ingredientPropType };
 Bun.propTypes = { ...ingredientPropType };
-
-// function Image(event) {
-//   cardImage.src = event.target.src;
-//   cardImage.alt = event.target.alt;
-//   cardCaption.textContent = event.target.alt;
-// }
 
 function ProtoIngredient({ ingredient, handlerClick }) {
   return (

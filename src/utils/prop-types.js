@@ -19,6 +19,5 @@ export const ingredientPropType = PropTypes.shape({
   ingredients: PropTypes.arrayOf(ingItem).isRequired,
   ingType: PropTypes.string.isRequired,
   setIsModalOpen: PropTypes.func.isRequired,
-  setItemIng: PropTypes.func.isRequired,
   changeModal: PropTypes.func.isRequired,
 });

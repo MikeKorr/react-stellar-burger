@@ -6,7 +6,6 @@ import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 export default function BurgerIngredients({
   data,
   setIsModalOpen,
-  setItemIng,
   changeModal,
 }) {
   return (
@@ -15,30 +14,27 @@ export default function BurgerIngredients({
       <div className="mt-5">
         <BurgerComponents />
         <div className={styles.ingBox + " custom-scroll"}>
-          <div className="mt-10">
+          <div className="mt-10" key={data._id}>
             <Bun
               ingredients={data}
               ingType={"Булки"}
               setIsModalOpen={setIsModalOpen}
-              setItemIng={setItemIng}
               changeModal={changeModal}
             />
           </div>
-          <div className="mt-10">
+          <div className="mt-10" key={data._id}>
             <Sauce
               ingredients={data}
               ingType={"Соусы"}
               setIsModalOpen={setIsModalOpen}
-              setItemIng={setItemIng}
               changeModal={changeModal}
             />
           </div>
-          <div className="mt-10">
+          <div className="mt-10" key={data._id}>
             <Main
               ingredients={data}
               ingType={"Начинка"}
               setIsModalOpen={setIsModalOpen}
-              setItemIng={setItemIng}
               changeModal={changeModal}
             />
           </div>

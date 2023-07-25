@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import { IngredientsDetails } from "../IngredientsDetails/IngredientsDetails";
 import { OrderDetails } from "../OrderDetails/OrderDetails";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_INGREDIENTS_ACTION } from "../../services/actions";
 
 // import { compose, createStore, applyMiddleware } from "redux";
 // import { compose, createStore } from "redux";
@@ -18,11 +20,17 @@ import { OrderDetails } from "../OrderDetails/OrderDetails";
 // const store = createStore(rootReducer, enhancer);
 
 function App() {
-  const [ingridientList, setingridientList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [itemIng, setItemIng] = useState();
+  const {
+    ingredient: { ingredient },
+  } = useSelector((store) => ({
+    ingredient: store.ingredientReducer,
+  }));
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
   const [itemModal, setItemModal] = useState("");
+  //dnd
+  // const [elements, setElements] = useState(ingredient);
 
   function changeModal(mod) {
     setItemModal(mod);
@@ -38,7 +46,7 @@ function App() {
       .then((res) => {
         if (res.ok) {
           return res.json().then((data) => {
-            setingridientList(data.data);
+            dispatch(SET_INGREDIENTS_ACTION(data.data));
           });
         }
         return Promise.reject(`Ошибка: ${res.status}`);
@@ -52,19 +60,14 @@ function App() {
     <div className={styles.app}>
       <AppHeader />
       <AppMain
-        data={ingridientList}
-        setItemIng={setItemIng}
+        data={ingredient}
         setIsModalOpen={setIsModalOpen}
         changeModal={changeModal}
       />
       {isModalOpen && (
         <>
           <Modal setIsModalOpen={setIsModalOpen}>
-            {itemModal == "Order" ? (
-              <OrderDetails />
-            ) : (
-              <IngredientsDetails itemIng={itemIng} />
-            )}
+            {itemModal == "Order" ? <OrderDetails /> : <IngredientsDetails />}
           </Modal>
         </>
       )}

@@ -1,13 +1,20 @@
 import styles from "./IngredientsDetails.module.css";
+import { useSelector } from "react-redux";
 
-export function IngredientsDetails({ itemIng }) {
+export function IngredientsDetails() {
+  const {
+    item: { item },
+  } = useSelector((store) => ({
+    item: store.ingredientReducer,
+  }));
+
   return (
     <div className={styles.box + " mt-30 mb-30"}>
       <div className={styles.title}>
         <p className=" text text_type_main-large">Детали ингредиента</p>
       </div>
-      <img src={itemIng.image_large} className="pb-4" alt={itemIng.name} />
-      <p className="text text_type_main-medium pb-8">{itemIng.name}</p>
+      <img src={item.image_large} className="pb-4" alt={item.name} />
+      <p className="text text_type_main-medium pb-8">{item.name}</p>
       <div
         className={
           styles.row + " text text_type_main-default text_color_inactive"
@@ -15,19 +22,19 @@ export function IngredientsDetails({ itemIng }) {
       >
         <div className={styles.str + " mr-5"}>
           <span>Калории,калл</span>
-          <span>{itemIng.calories}</span>
+          <span>{item.calories}</span>
         </div>
         <div className={styles.str + " mr-5"}>
           <span>Белки, г</span>
-          <span>{itemIng.proteins}</span>
+          <span>{item.proteins}</span>
         </div>
         <div className={styles.str + " mr-5"}>
           <span>Жиры, г</span>
-          <span>{itemIng.fat}</span>
+          <span>{item.fat}</span>
         </div>
         <div className={styles.str}>
           <span>Углеводы, г</span>
-          <span>{itemIng.carbohydrates}</span>
+          <span>{item.carbohydrates}</span>
         </div>
       </div>
     </div>

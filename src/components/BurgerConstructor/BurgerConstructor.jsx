@@ -5,8 +5,17 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./BurgerConstructor.module.css";
+import { useDrop } from "react-dnd";
+import { useState } from "react";
 
 export default function BurgerConstructor({ data, changeModal }) {
+  const [draggedElements, setDraggedElements] = useState([]);
+  const [, dropRef] = useDrop({
+    accept: "Ing",
+    drop(data) {
+      setDraggedElements([...draggedElements, data]);
+    },
+  });
   return (
     <div>
       <div className={styles.const + " mb-4 mt-4"}>
@@ -24,22 +33,10 @@ export default function BurgerConstructor({ data, changeModal }) {
         </div>
       </div>
       <div className={styles.main + " custom-scroll"}>
-        {data.map((item) => {
+        {draggedElements.map((item) => {
           if (item.type == "main") {
             return (
-              <div key={item._id} className={styles.ing}>
-                <DragIcon type="primary" />
-                <ConstructorElement
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.image}
-                  extraClass="mb-4"
-                />
-              </div>
-            );
-          } else if (item.type == "sauce") {
-            return (
-              <div key={item._id} className={styles.ing}>
+              <div key={item._id} className={styles.ing} ref={dropRef}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   text={item.name}

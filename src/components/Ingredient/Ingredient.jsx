@@ -4,20 +4,21 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./Ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_ITEM_ACTION } from "../../services/actions";
+import { useDrag } from "react-dnd";
 
-export function Bun({
-  ingredients,
-  ingType,
-  setIsModalOpen,
-  setItemIng,
-  changeModal,
-}) {
+export function Bun({ ingredients, ingType, setIsModalOpen, changeModal }) {
+  const dispatch = useDispatch();
   const handleClick = (evt) => {
-    setItemIng(evt);
+    dispatch(SET_ITEM_ACTION(evt));
     setIsModalOpen(true);
     changeModal("Ing");
   };
-
+  const [, dragRef] = useDrag({
+    type: "Ing",
+    item: ingredients,
+  });
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -25,11 +26,13 @@ export function Bun({
         {ingredients.map((item) => {
           if (item.type == "bun") {
             return (
-              <ProtoIngredient
-                handlerClick={handleClick}
-                key={item._id}
-                ingredient={item}
-              />
+              <div draggable key={item._id} ref={dragRef}>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                />
+              </div>
             );
           }
         })}
@@ -38,19 +41,17 @@ export function Bun({
   );
 }
 
-export function Sauce({
-  ingredients,
-  ingType,
-  setIsModalOpen,
-  setItemIng,
-  changeModal,
-}) {
+export function Sauce({ ingredients, ingType, setIsModalOpen, changeModal }) {
+  const dispatch = useDispatch();
   const handleClick = (evt) => {
-    setItemIng(evt);
+    dispatch(SET_ITEM_ACTION(evt));
     setIsModalOpen(true);
     changeModal("Ing");
   };
-
+  const [, dragRef] = useDrag({
+    type: "Ing",
+    item: ingredients,
+  });
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -58,11 +59,13 @@ export function Sauce({
         {ingredients.map((item) => {
           if (item.type == "sauce") {
             return (
-              <ProtoIngredient
-                handlerClick={handleClick}
-                key={item._id}
-                ingredient={item}
-              />
+              <div draggable key={item._id} ref={dragRef}>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                />
+              </div>
             );
           }
         })}
@@ -71,19 +74,17 @@ export function Sauce({
   );
 }
 
-export function Main({
-  ingredients,
-  ingType,
-  setIsModalOpen,
-  setItemIng,
-  changeModal,
-}) {
+export function Main({ ingredients, ingType, setIsModalOpen, changeModal }) {
+  const dispatch = useDispatch();
   const handleClick = (evt) => {
-    setItemIng(evt);
+    dispatch(SET_ITEM_ACTION(evt));
     setIsModalOpen(true);
     changeModal("Ing");
   };
-
+  const [, dragRef] = useDrag({
+    type: "Ing",
+    item: ingredients,
+  });
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -91,11 +92,14 @@ export function Main({
         {ingredients.map((item) => {
           if (item.type == "main") {
             return (
-              <ProtoIngredient
-                handlerClick={handleClick}
-                key={item._id}
-                ingredient={item}
-              />
+              <div draggable key={item._id} ref={dragRef}>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                  draggable
+                />
+              </div>
             );
           }
         })}
@@ -108,19 +112,17 @@ Main.propTypes = { ...ingredientPropType };
 Sauce.propTypes = { ...ingredientPropType };
 Bun.propTypes = { ...ingredientPropType };
 
-function ProtoIngredient({ ingredient, handlerClick }) {
+function ProtoIngredient({ handlerClick, item }) {
   return (
-    <div className={styles.ingredient} onClick={() => handlerClick(ingredient)}>
+    <div className={styles.ingredient} onClick={() => handlerClick(item)}>
       <Counter count={1} size="default" extraClass="m-1" />
-      <img className="ml-4 mr-4" src={ingredient.image} />
+      <img className="ml-4 mr-4" src={item.image} />
       <div className={styles.block + " mt-1 mb-1"}>
-        <span className="text text_type_digits-default mr-1">
-          {ingredient.price}
-        </span>
+        <span className="text text_type_digits-default mr-1">{item.price}</span>
         <CurrencyIcon type="primary" />
       </div>
       <p className={styles.center + " text text_type_main-small"}>
-        {ingredient.name}
+        {item.name}
       </p>
     </div>
   );

@@ -9,3 +9,7 @@
   max-height: 800px;
   overflow-y: scroll;
 }
+
+.name {
+  visibility: hidden;
+}

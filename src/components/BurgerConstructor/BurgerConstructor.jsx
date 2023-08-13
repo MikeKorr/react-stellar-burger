@@ -7,18 +7,40 @@ import {
 import styles from "./BurgerConstructor.module.css";
 import { useDrop } from "react-dnd";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_BUN_ACTION, DEL_ING_ACTION } from "../../services/actions";
+import { ADD_ING_ACTION } from "../../services/actions";
+import { nanoid } from "nanoid";
 
 export default function BurgerConstructor({ data, changeModal }) {
-  const [draggedElements, setDraggedElements] = useState([]);
-  const [, dropRef] = useDrop({
-    accept: "Ing",
-    drop(data) {
-      setDraggedElements([...draggedElements, data]);
-    },
-  });
+  const dispatch = useDispatch();
+  const main = useSelector((state) => state.constructorReducer.mains);
+  const buns = useSelector((state) => state.constructorReducer.buns);
+  const [, dropIng] = useDrop(() => ({
+    accept: "ingredient",
+    drop: (item) => newElement(item),
+  }));
+
+  const newElement = (element) => {
+    console.log(element, "пп");
+    element = { ...element, id: nanoid() };
+    if (element.type === "bun") {
+      console.log(element, "жж");
+      dispatch(SET_BUN_ACTION(element));
+    }
+    if (element.type !== "bun") {
+      console.log(element, "зз");
+      dispatch(ADD_ING_ACTION(element));
+    }
+  };
+
+  const delElem = (item) => {
+    dispatch(DEL_ING_ACTION(item));
+  };
+  console.log(main, "пппавввыыыыыы");
   return (
     <div>
-      <div className={styles.const + " mb-4 mt-4"}>
+      <div className={styles.const + " mb-4 mt-4"} ref={dropIng}>
         <div className={styles.ing}>
           <div className={styles.hidden}>
             <DragIcon type="primary" />
@@ -33,16 +55,18 @@ export default function BurgerConstructor({ data, changeModal }) {
         </div>
       </div>
       <div className={styles.main + " custom-scroll"}>
-        {draggedElements.map((item) => {
-          if (item.type == "main") {
+        {main.map((item) => {
+          if (item.type !== "bun") {
+            console.log(item, "привет");
             return (
-              <div key={item._id} className={styles.ing} ref={dropRef}>
+              <div key={item._id} className={styles.ing} ref={dropIng}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   text={item.name}
                   price={item.price}
                   thumbnail={item.image}
                   extraClass="mb-4"
+                  handleClose={delElem}
                 />
               </div>
             );

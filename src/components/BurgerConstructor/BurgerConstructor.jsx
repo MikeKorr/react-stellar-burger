@@ -5,31 +5,29 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./BurgerConstructor.module.css";
-import { useDrop } from "react-dnd";
-import { useState } from "react";
+import { useDrag, useDrop } from "react-dnd";
+
 import { useDispatch, useSelector } from "react-redux";
 import { SET_BUN_ACTION, DEL_ING_ACTION } from "../../services/actions";
-import { ADD_ING_ACTION } from "../../services/actions";
+import { ADD_ING_ACTION, DND_ING_ACTION } from "../../services/actions";
 import { nanoid } from "nanoid";
+import { useRef } from "react";
 
-export default function BurgerConstructor({ data, changeModal }) {
+export default function BurgerConstructor({ changeModal }) {
   const dispatch = useDispatch();
   const main = useSelector((state) => state.constructorReducer.mains);
-  const buns = useSelector((state) => state.constructorReducer.buns);
+  const bunCollect = useSelector((state) => state.constructorReducer.buns);
   const [, dropIng] = useDrop(() => ({
     accept: "ingredient",
-    drop: (item) => newElement(item),
+    drop: (item) => newCardElement(item.item),
   }));
 
-  const newElement = (element) => {
-    console.log(element, "пп");
+  const newCardElement = (element) => {
     element = { ...element, id: nanoid() };
     if (element.type === "bun") {
-      console.log(element, "жж");
       dispatch(SET_BUN_ACTION(element));
     }
     if (element.type !== "bun") {
-      console.log(element, "зз");
       dispatch(ADD_ING_ACTION(element));
     }
   };
@@ -37,53 +35,67 @@ export default function BurgerConstructor({ data, changeModal }) {
   const delElem = (item) => {
     dispatch(DEL_ING_ACTION(item));
   };
-  console.log(main, "пппавввыыыыыы");
+
+  const [, dropConst] = useDrop(() => ({
+    accept: "elem",
+    drop: (item) => DND_ING_ACTION(item.item),
+  }));
   return (
-    <div>
-      <div className={styles.const + " mb-4 mt-4"} ref={dropIng}>
-        <div className={styles.ing}>
-          <div className={styles.hidden}>
-            <DragIcon type="primary" />
-          </div>
-          <ConstructorElement
-            type="top"
-            isLocked={true}
-            text="Краторная булка N-200i (верх)"
-            price={200}
-            thumbnail={"https://code.s3.yandex.net/react/code/bun-02.png"}
-          />
-        </div>
-      </div>
-      <div className={styles.main + " custom-scroll"}>
-        {main.map((item) => {
-          if (item.type !== "bun") {
-            console.log(item, "привет");
+    <div ref={dropIng}>
+      <div className={styles.const + " mb-4 mt-4"}>
+        {bunCollect.map((item) => {
+          if (item.type === "bun")
             return (
-              <div key={item._id} className={styles.ing} ref={dropIng}>
-                <DragIcon type="primary" />
+              <div className={styles.ing} key={item.id}>
+                <div className={styles.hidden}>
+                  <DragIcon type="primary" />
+                </div>
                 <ConstructorElement
-                  text={item.name}
+                  type="top"
+                  isLocked={true}
+                  text={`${item.name} (верх)`}
                   price={item.price}
                   thumbnail={item.image}
-                  extraClass="mb-4"
-                  handleClose={delElem}
                 />
               </div>
+            );
+        })}
+      </div>
+      <div className={styles.main + " custom-scroll"} ref={dropConst}>
+        {main.map((item, index) => {
+          if (item.type !== "bun") {
+            return (
+              <BurgerConstElement
+                elem={item}
+                index={index}
+                id={item.id}
+                key={item.id}
+                delElem={delElem}
+              />
             );
           }
         })}
       </div>
       <div className={styles.ing}>
-        <div className={styles.hidden}>
-          <DragIcon type="primary" />
+        <div className={styles.const + " mb-4 mt-4"}>
+          {bunCollect.map((item) => {
+            if (item.type === "bun")
+              return (
+                <div className={styles.ing} key={item.id}>
+                  <div className={styles.hidden}>
+                    <DragIcon type="primary" />
+                  </div>
+                  <ConstructorElement
+                    type="bottom"
+                    isLocked={true}
+                    text={`${item.name} (низ)`}
+                    price={item.price}
+                    thumbnail={item.image}
+                  />
+                </div>
+              );
+          })}
         </div>
-        <ConstructorElement
-          type="bottom"
-          isLocked={true}
-          text="Краторная булка N-200i (низ)"
-          price={200}
-          thumbnail={"https://code.s3.yandex.net/react/code/bun-02.png"}
-        />
       </div>
       <div className={styles.left + " mt-10"}>
         <div className={styles.box + " mr-10"}>
@@ -100,6 +112,62 @@ export default function BurgerConstructor({ data, changeModal }) {
           Оформить заказ
         </Button>
       </div>
+    </div>
+  );
+}
+
+function BurgerConstElement({ elem, delElem, id, index }) {
+  const ref = useRef(null);
+  const dispatch = useDispatch();
+  const changeCardPosition = (drag, drop) => {
+    dispatch(DND_ING_ACTION(drag, drop));
+  };
+  const [, drop] = useDrop({
+    accept: "elem",
+
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const clientOffset = monitor.getClientOffset();
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      changeCardPosition(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  const [, drag] = useDrag({
+    type: "elem",
+    item: () => {
+      return { id, index };
+    },
+  });
+  drag(drop(ref));
+
+  return (
+    <div className={styles.ing} ref={ref} key={elem.id}>
+      <DragIcon type="primary" />
+      <ConstructorElement
+        text={elem.name}
+        price={elem.price}
+        thumbnail={elem.image}
+        extraClass="mb-4"
+        handleClose={() => delElem(elem)}
+      />
     </div>
   );
 }

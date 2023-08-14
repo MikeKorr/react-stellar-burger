@@ -5,10 +5,15 @@ import {
 import styles from "./Ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_ING_ACTION, SET_ITEM_ACTION } from "../../services/actions";
+import { SET_ITEM_ACTION } from "../../services/actions";
 import { useDrag } from "react-dnd";
+import { useMemo } from "react";
 
-export function Bun({ ingredients, ingType, setIsModalOpen, changeModal }) {
+export function Bun({ ingType, setIsModalOpen, changeModal }) {
+  const ingredients = useSelector(
+    (state) => state.ingredientReducer.ingredient
+  );
+
   const dispatch = useDispatch();
   const handleClick = (evt) => {
     dispatch(SET_ITEM_ACTION(evt));
@@ -24,13 +29,11 @@ export function Bun({ ingredients, ingType, setIsModalOpen, changeModal }) {
           if (item.type == "bun") {
             return (
               <div draggable key={item._id}>
-                <Dnd item={item} key={item._id}>
-                  <ProtoIngredient
-                    handlerClick={handleClick}
-                    key={item._id}
-                    item={item}
-                  />
-                </Dnd>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                />
               </div>
             );
           }
@@ -40,13 +43,18 @@ export function Bun({ ingredients, ingType, setIsModalOpen, changeModal }) {
   );
 }
 
-export function Sauce({ ingredients, ingType, setIsModalOpen, changeModal }) {
+export function Sauce({ ingType, setIsModalOpen, changeModal }) {
   const dispatch = useDispatch();
   const handleClick = (evt) => {
     dispatch(SET_ITEM_ACTION(evt));
     setIsModalOpen(true);
     changeModal("Ing");
   };
+
+  const ingredients = useSelector(
+    (state) => state.ingredientReducer.ingredient
+  );
+
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -55,13 +63,11 @@ export function Sauce({ ingredients, ingType, setIsModalOpen, changeModal }) {
           if (item.type == "sauce") {
             return (
               <div draggable key={item._id}>
-                <Dnd item={item} key={item._id}>
-                  <ProtoIngredient
-                    handlerClick={handleClick}
-                    key={item._id}
-                    item={item}
-                  />
-                </Dnd>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                />
               </div>
             );
           }
@@ -71,13 +77,18 @@ export function Sauce({ ingredients, ingType, setIsModalOpen, changeModal }) {
   );
 }
 
-export function Main({ ingredients, ingType, setIsModalOpen, changeModal }) {
+export function Main({ ingType, setIsModalOpen, changeModal }) {
   const dispatch = useDispatch();
   const handleClick = (evt) => {
     dispatch(SET_ITEM_ACTION(evt));
     setIsModalOpen(true);
     changeModal("Ing");
   };
+
+  const ingredients = useSelector(
+    (state) => state.ingredientReducer.ingredient
+  );
+
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -86,13 +97,11 @@ export function Main({ ingredients, ingType, setIsModalOpen, changeModal }) {
           if (item.type == "main") {
             return (
               <div key={item._id}>
-                <Dnd item={item} key={item._id}>
-                  <ProtoIngredient
-                    handlerClick={handleClick}
-                    key={item._id}
-                    item={item}
-                  />
-                </Dnd>
+                <ProtoIngredient
+                  handlerClick={handleClick}
+                  key={item._id}
+                  item={item}
+                />
               </div>
             );
           }
@@ -107,10 +116,39 @@ Sauce.propTypes = { ...ingredientPropType };
 Bun.propTypes = { ...ingredientPropType };
 
 function ProtoIngredient({ item }) {
+  const main = useSelector((state) => state.constructorReducer.mains);
+  const buns = useSelector((state) => state.constructorReducer.buns);
+
+  const counter = useMemo(
+    () =>
+      main.filter((el) => el._id === item._id).length ||
+      buns.filter((el) => el._id === item._id).length * 2,
+    [buns, main, item._id]
+  );
+
+  const [, dragRef] = useDrag(
+    {
+      type: "ingredient",
+      item: {
+        item,
+        id: item._id,
+        type: item.type,
+      },
+    },
+    []
+  );
+
   return (
-    <div className={styles.ingredient}>
-      <Counter count={1} size="default" extraClass="m-1" />
+    <div className={styles.ingredient} ref={dragRef}>
       <img className="ml-4 mr-4" src={item.image} />
+      {counter > 0 ? (
+        <Counter
+          id={item._id}
+          count={counter}
+          size="default"
+          extraClass="m-1"
+        />
+      ) : null}
       <div className={styles.block + " mt-1 mb-1"}>
         <span className="text text_type_digits-default mr-1">{item.price}</span>
         <CurrencyIcon type="primary" />
@@ -120,18 +158,4 @@ function ProtoIngredient({ item }) {
       </p>
     </div>
   );
-}
-
-function Dnd({ children, item }) {
-  const [, dragRef] = useDrag(
-    {
-      type: "ingredient",
-      item: {
-        item,
-        type: item.type,
-      },
-    },
-    []
-  );
-  return <div ref={dragRef}>{children}</div>;
 }

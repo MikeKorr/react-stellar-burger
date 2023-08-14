@@ -24,7 +24,7 @@ export const constructorReducer = (state = constructorState, action) => {
     case ADD_ING: {
       return {
         ...state,
-        mains: [...state.mains, action.payload.item],
+        mains: [...state.mains, action.payload],
       };
     }
     case DEL_ING: {

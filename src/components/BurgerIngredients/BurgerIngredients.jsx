@@ -5,11 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { SET_TAB_ACTION, SCROLL_ING_ACTION } from "../../services/actions";
 
-export default function BurgerIngredients({
-  data,
-  setIsModalOpen,
-  changeModal,
-}) {
+export default function BurgerIngredients({ setIsModalOpen, changeModal }) {
   const dispatch = useDispatch();
   const scroll = useSelector((state) => state.scrollReducer.scroll);
 
@@ -17,7 +13,6 @@ export default function BurgerIngredients({
   const refSauce = useRef();
   const refMain = useRef();
   const refScroll = useRef();
-  console.log(scroll);
 
   useEffect(() => {
     if (scroll === "bun") {
@@ -35,15 +30,14 @@ export default function BurgerIngredients({
     const currents = [refBun.current, refSauce.current, refMain.current];
     const watcher = new IntersectionObserver(
       (currents) => {
-        currents.forEach((heading) => {
-          console.log(heading.target, refBun.current, refSauce.current);
-          if (heading.target === refBun.current) {
+        currents.forEach((h) => {
+          if (h.target === refBun.current) {
             dispatch(SET_TAB_ACTION("bun"));
           }
-          if (heading.target === refSauce.current) {
+          if (h.target === refSauce.current) {
             dispatch(SET_TAB_ACTION("sauce"));
           }
-          if (heading.target === refMain.current) {
+          if (h.target === refMain.current) {
             dispatch(SET_TAB_ACTION("main"));
           }
         });
@@ -53,13 +47,13 @@ export default function BurgerIngredients({
         rootMargin: "0px 0px -70% 0px",
       }
     );
-    currents.forEach((heading) => {
-      return watcher.observe(heading);
+    currents.forEach((h) => {
+      return watcher.observe(h);
     });
   }, [dispatch]);
 
   return (
-    <div className={styles.box + " mt-10"} ref={refScroll}>
+    <div className={styles.box + " mt-10"}>
       <span className=" text text_type_main-large">Соберите бургер</span>
       <div className="mt-5">
         <BurgerComponents
@@ -67,13 +61,12 @@ export default function BurgerIngredients({
           refSauce={refSauce}
           refMain={refMain}
         />
-        <div className={styles.ingBox + " custom-scroll"}>
+        <div className={styles.ingBox + " custom-scroll"} ref={refScroll}>
           <div className="mt-10">
             <span className={styles.name} ref={refBun}>
               Булки
             </span>
             <Bun
-              ingredients={data}
               ingType={"Булки"}
               setIsModalOpen={setIsModalOpen}
               changeModal={changeModal}
@@ -84,7 +77,6 @@ export default function BurgerIngredients({
               Соусы
             </span>
             <Sauce
-              ingredients={data}
               ingType={"Соусы"}
               setIsModalOpen={setIsModalOpen}
               changeModal={changeModal}
@@ -95,7 +87,6 @@ export default function BurgerIngredients({
               Начинка
             </span>
             <Main
-              ingredients={data}
               ingType={"Начинка"}
               setIsModalOpen={setIsModalOpen}
               changeModal={changeModal}

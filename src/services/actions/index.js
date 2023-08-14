@@ -1,3 +1,5 @@
+export const SET_MODAL = "SET_MODAL";
+
 export const SET_INGREDIENTS = "SET_INGREDIENTS";
 export const SET_INGREDIENTS_ACTION = (ingredients) => {
   return {

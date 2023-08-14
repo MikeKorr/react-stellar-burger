@@ -54,16 +54,12 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <AppMain
-        data={ingredient}
-        setIsModalOpen={setIsModalOpen}
-        changeModal={changeModal}
-      />
+      <AppMain setIsModalOpen={setIsModalOpen} changeModal={changeModal} />
       {isModalOpen && (
         <>
           <Modal setIsModalOpen={setIsModalOpen}>

@@ -12,6 +12,9 @@ import { SET_BUN_ACTION, DEL_ING_ACTION } from "../../services/actions";
 import { ADD_ING_ACTION, DND_ING_ACTION } from "../../services/actions";
 import { nanoid } from "nanoid";
 import { useRef } from "react";
+import { OrderButton } from "../OrderButton/OrderButton";
+import { getOrder } from "../../services/actions";
+import { useMemo } from "react";
 
 export default function BurgerConstructor({ changeModal }) {
   const dispatch = useDispatch();
@@ -30,6 +33,14 @@ export default function BurgerConstructor({ changeModal }) {
     if (element.type !== "bun") {
       dispatch(ADD_ING_ACTION(element));
     }
+  };
+
+  const ordId = useMemo(() => {
+    return bunCollect.map((el) => el.id);
+  }, [main]);
+
+  const requestId = () => {
+    dispatch(getOrder(ordId));
   };
 
   const delElem = (item) => {
@@ -97,20 +108,14 @@ export default function BurgerConstructor({ changeModal }) {
           })}
         </div>
       </div>
-      <div className={styles.left + " mt-10"}>
-        <div className={styles.box + " mr-10"}>
-          <p className="text text_type_digits-medium">610</p>
-          <CurrencyIcon type="primary" />
-        </div>
 
-        <Button
-          htmlType="button"
-          type="primary"
-          size="large"
-          onClick={() => changeModal("Order")}
-        >
-          Оформить заказ
-        </Button>
+      <div
+        onClick={() => {
+          changeModal("Order");
+          requestId();
+        }}
+      >
+        <OrderButton />
       </div>
     </div>
   );

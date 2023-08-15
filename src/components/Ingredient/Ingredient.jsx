@@ -8,19 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { SET_ITEM_ACTION } from "../../services/actions";
 import { useDrag } from "react-dnd";
 import { useMemo } from "react";
+import { ADD_DETAILS_ACTION } from "../../services/actions";
 
 export function Bun({ ingType, setIsModalOpen, changeModal }) {
   const ingredients = useSelector(
     (state) => state.ingredientReducer.ingredient
   );
-
-  const dispatch = useDispatch();
-  const handleClick = (evt) => {
-    dispatch(SET_ITEM_ACTION(evt));
-    setIsModalOpen(true);
-    changeModal("Ing");
-  };
-
   return (
     <div>
       <p className="text text_type_main-medium">{ingType}</p>
@@ -30,9 +23,10 @@ export function Bun({ ingType, setIsModalOpen, changeModal }) {
             return (
               <div draggable key={item._id}>
                 <ProtoIngredient
-                  handlerClick={handleClick}
                   key={item._id}
                   item={item}
+                  setIsModalOpen={setIsModalOpen}
+                  changeModal={changeModal}
                 />
               </div>
             );
@@ -44,13 +38,6 @@ export function Bun({ ingType, setIsModalOpen, changeModal }) {
 }
 
 export function Sauce({ ingType, setIsModalOpen, changeModal }) {
-  const dispatch = useDispatch();
-  const handleClick = (evt) => {
-    dispatch(SET_ITEM_ACTION(evt));
-    setIsModalOpen(true);
-    changeModal("Ing");
-  };
-
   const ingredients = useSelector(
     (state) => state.ingredientReducer.ingredient
   );
@@ -64,9 +51,10 @@ export function Sauce({ ingType, setIsModalOpen, changeModal }) {
             return (
               <div draggable key={item._id}>
                 <ProtoIngredient
-                  handlerClick={handleClick}
                   key={item._id}
                   item={item}
+                  setIsModalOpen={setIsModalOpen}
+                  changeModal={changeModal}
                 />
               </div>
             );
@@ -78,13 +66,6 @@ export function Sauce({ ingType, setIsModalOpen, changeModal }) {
 }
 
 export function Main({ ingType, setIsModalOpen, changeModal }) {
-  const dispatch = useDispatch();
-  const handleClick = (evt) => {
-    dispatch(SET_ITEM_ACTION(evt));
-    setIsModalOpen(true);
-    changeModal("Ing");
-  };
-
   const ingredients = useSelector(
     (state) => state.ingredientReducer.ingredient
   );
@@ -98,9 +79,10 @@ export function Main({ ingType, setIsModalOpen, changeModal }) {
             return (
               <div key={item._id}>
                 <ProtoIngredient
-                  handlerClick={handleClick}
                   key={item._id}
                   item={item}
+                  setIsModalOpen={setIsModalOpen}
+                  changeModal={changeModal}
                 />
               </div>
             );
@@ -115,7 +97,7 @@ Main.propTypes = { ...ingredientPropType };
 Sauce.propTypes = { ...ingredientPropType };
 Bun.propTypes = { ...ingredientPropType };
 
-function ProtoIngredient({ item }) {
+function ProtoIngredient({ item, setIsModalOpen, changeModal }) {
   const main = useSelector((state) => state.constructorReducer.mains);
   const buns = useSelector((state) => state.constructorReducer.buns);
 
@@ -138,8 +120,15 @@ function ProtoIngredient({ item }) {
     []
   );
 
+  const dispatch = useDispatch();
+  const handleClick = () => {
+    dispatch(ADD_DETAILS_ACTION(item));
+    setIsModalOpen(true);
+    changeModal("Ing");
+  };
+
   return (
-    <div className={styles.ingredient} ref={dragRef}>
+    <div className={styles.ingredient} ref={dragRef} onClick={handleClick}>
       <img className="ml-4 mr-4" src={item.image} />
       {counter > 0 ? (
         <Counter

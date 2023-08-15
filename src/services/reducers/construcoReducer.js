@@ -30,7 +30,7 @@ export const constructorReducer = (state = constructorState, action) => {
     case DEL_ING: {
       return {
         ...state,
-        mains: state.mains.filter((item) => item.id !== action.id),
+        mains: state.mains.filter((item) => item.id !== action.payload.id),
       };
     }
     case DND_ING: {

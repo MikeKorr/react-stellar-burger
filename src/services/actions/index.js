@@ -1,5 +1,3 @@
-export const SET_MODAL = "SET_MODAL";
-
 export const SET_INGREDIENTS = "SET_INGREDIENTS";
 export const SET_INGREDIENTS_ACTION = (ingredients) => {
   return {
@@ -83,9 +81,42 @@ export const GET_ORDER_REQUEST = "GET_ORDER_REQUEST";
 export const GET_ORDER_ERR = "GET_ORDER_ERR";
 export const GET_ORDER_DONE = "GET_ORDER_DONE";
 
-export const GET_ORDER_DONE_ACTION = (item) => ({
+export const GET_ORDER_DONE_ACTION = (id) => ({
   type: GET_ORDER_DONE,
-  payload: item,
+  payload: id,
 });
 
-export function getOrders() {}
+export const GET_ORDER_REQUEST_ACTION = () => ({
+  type: GET_ORDER_REQUEST,
+});
+
+export const request = (url, options) => {
+  return fetch(url, options).then(checkResponse);
+};
+
+const checkResponse = (res) => {
+  if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка ${res.status}`);
+};
+
+export const getOrder = (id) => {
+  const url = "https://norma.nomoreparties.space/api/orders";
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ingredients: id,
+    }),
+  };
+  return (dispatch) => {
+    request(url, options)
+      .then(checkResponse)
+      .then(({ order: { number } }) => {
+        dispatch(GET_ORDER_DONE_ACTION(number));
+      })
+      .then(() => dispatch(CLEAR_CONSTRUCTOR_ACTION()))
+      .catch((e) => console.log(e));
+  };
+};

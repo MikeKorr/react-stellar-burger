@@ -4,12 +4,14 @@ import { ingredientReducer } from "./reducers/ingredientsReducer";
 import { scrollReducer } from "./reducers/scrollReduser";
 import { detailReducer } from "./reducers/detailsReducer";
 import { constructorReducer } from "./reducers/construcoReducer";
+import { orderReducer } from "./reducers/orderReducer";
 
 const rootReducer = combineReducers({
   ingredientReducer,
   scrollReducer,
   detailReducer,
   constructorReducer,
+  orderReducer,
 });
 
 export const store = createStore(rootReducer, composeWithDevTools());

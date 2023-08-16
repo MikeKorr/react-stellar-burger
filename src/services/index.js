@@ -5,6 +5,8 @@ import { scrollReducer } from "./reducers/scrollReduser";
 import { detailReducer } from "./reducers/detailsReducer";
 import { constructorReducer } from "./reducers/construcoReducer";
 import { orderReducer } from "./reducers/orderReducer";
+import { applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
   ingredientReducer,
@@ -14,4 +16,8 @@ const rootReducer = combineReducers({
   orderReducer,
 });
 
-export const store = createStore(rootReducer, composeWithDevTools());
+export const store = createStore(
+  rootReducer,
+  composeWithDevTools(),
+  applyMiddleware(thunk)
+);

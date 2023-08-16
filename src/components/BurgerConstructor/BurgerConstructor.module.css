@@ -4,8 +4,12 @@
 }
 
 .main {
-  max-height: 475px;
-  overflow-y: scroll;
+  width: 590px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 400px;
+  justify-content: stretch;
 }
 
 .hidden {

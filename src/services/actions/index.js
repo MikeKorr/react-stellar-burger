@@ -112,7 +112,6 @@ export const getOrder = (id) => {
   };
   return (dispatch) => {
     request(url, options)
-      .then(checkResponse)
       .then(({ order: { number } }) => {
         dispatch(GET_ORDER_DONE_ACTION(number));
       })

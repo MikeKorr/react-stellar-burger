@@ -36,7 +36,7 @@ export default function BurgerConstructor({ changeModal }) {
   };
 
   const ordId = useMemo(() => {
-    return bunCollect.map((el) => el.id);
+    return bunCollect.map((el) => el._id);
   }, [main]);
 
   const requestId = () => {
@@ -110,6 +110,7 @@ export default function BurgerConstructor({ changeModal }) {
       </div>
 
       <div
+        className={styles.order}
         onClick={() => {
           changeModal("Order");
           requestId();

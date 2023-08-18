@@ -3,6 +3,7 @@ import styles from "./Modal.module.css";
 import ReactDOM from "react-dom";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import Overlay from "../Overlay/Overlay";
+import PropTypes from "prop-types";
 
 const modalRoot = document.getElementById("react-modal");
 
@@ -38,3 +39,8 @@ export default function Modal({ children, setIsModalOpen }) {
     modalRoot
   );
 }
+
+Modal.propTypes = {
+  setIsModalOpen: PropTypes.func.isRequired,
+  children: PropTypes.element.isRequired,
+};

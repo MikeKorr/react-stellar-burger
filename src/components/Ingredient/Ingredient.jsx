@@ -3,13 +3,14 @@ import {
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./Ingredient.module.css";
-import { ingredientPropType } from "../../utils/prop-types";
+
 import { useDispatch, useSelector } from "react-redux";
-import { SET_ITEM_ACTION } from "../../services/actions";
+
 import { useDrag } from "react-dnd";
 import { useMemo } from "react";
 import { ADD_DETAILS_ACTION } from "../../services/actions";
-
+import PropTypes from "prop-types";
+import { ingItem } from "../../utils/prop-types";
 export function Bun({ ingType, setIsModalOpen, changeModal }) {
   const ingredients = useSelector(
     (state) => state.ingredientReducer.ingredient
@@ -93,10 +94,6 @@ export function Main({ ingType, setIsModalOpen, changeModal }) {
   );
 }
 
-Main.propTypes = { ...ingredientPropType };
-Sauce.propTypes = { ...ingredientPropType };
-Bun.propTypes = { ...ingredientPropType };
-
 function ProtoIngredient({ item, setIsModalOpen, changeModal }) {
   const main = useSelector((state) => state.constructorReducer.mains);
   const buns = useSelector((state) => state.constructorReducer.buns);
@@ -148,3 +145,25 @@ function ProtoIngredient({ item, setIsModalOpen, changeModal }) {
     </div>
   );
 }
+
+ProtoIngredient.propTypes = {
+  item: ingItem.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  changeModal: PropTypes.func.isRequired,
+};
+
+Main.propTypes = {
+  ingType: PropTypes.string.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  changeModal: PropTypes.func.isRequired,
+};
+Bun.propTypes = {
+  ingType: PropTypes.string.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  changeModal: PropTypes.func.isRequired,
+};
+Sauce.propTypes = {
+  ingType: PropTypes.string.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
+  changeModal: PropTypes.func.isRequired,
+};

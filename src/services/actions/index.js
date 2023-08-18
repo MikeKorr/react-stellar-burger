@@ -90,7 +90,7 @@ export const GET_ORDER_REQUEST_ACTION = () => ({
   type: GET_ORDER_REQUEST,
 });
 
-export const request = (url, options) => {
+export const reqData = (url, options) => {
   return fetch(url, options).then(checkResponse);
 };
 
@@ -111,7 +111,7 @@ export const getOrder = (id) => {
     }),
   };
   return (dispatch) => {
-    request(url, options)
+    reqData(url, options)
       .then(({ order: { number } }) => {
         dispatch(GET_ORDER_DONE_ACTION(number));
       })

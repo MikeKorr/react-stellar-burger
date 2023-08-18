@@ -15,6 +15,8 @@ import { useRef } from "react";
 import { OrderButton } from "../OrderButton/OrderButton";
 import { getOrder } from "../../services/actions";
 import { useMemo } from "react";
+import PropTypes from "prop-types";
+import { ingItem } from "../../utils/prop-types";
 
 export default function BurgerConstructor({ changeModal }) {
   const dispatch = useDispatch();
@@ -177,3 +179,14 @@ function BurgerConstElement({ elem, delElem, id, index }) {
     </div>
   );
 }
+
+BurgerConstElement.propTypes = {
+  elem: ingItem.isRequired,
+  delElem: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+};
+
+BurgerConstructor.propTypes = {
+  changeModal: PropTypes.func.isRequired,
+};
